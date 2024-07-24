@@ -58,6 +58,7 @@ type PromptHistoryMember struct {
 
 type PromptHistoryMemberImages struct {
 	Images *[]DataOutputFile `json:"images"`
+	Gifs   []DataOutputFile  `json:"gifs"`
 }
 
 // PromptHistoryItem contains prompt id, WorkFlow, output info
