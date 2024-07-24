@@ -1,4 +1,4 @@
-module github.com/keemoo/comfyUIclient
+module github.com/kee-moo/comfyUIclient
 
 go 1.18
 
