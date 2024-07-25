@@ -122,7 +122,12 @@ func getWSMessageData(messageType WsMessageType) interface{} {
 			ExecutionError:       func() interface{} { return &WSMessageExecutionError{} },
 		}
 	})
-	return messageTypeMap[messageType]()
+
+	fn, exist := messageTypeMap[messageType]
+	if !exist {
+		return &WSMessageDataStatus{}
+	}
+	return fn()
 }
 
 func (m *WSMessage) UnmarshalJSON(b []byte) error {
