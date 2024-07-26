@@ -22,6 +22,7 @@ type Client struct {
 	webSocket  *WebSocketConnection
 	ch         chan *WSMessage
 	httpClient *http.Client
+	Token      string
 }
 
 type EndPoint struct {
@@ -73,6 +74,10 @@ func NewClient(endPoint *EndPoint, httpClient *http.Client) *Client {
 	}
 	c.webSocket = NewDefaultWebSocketConnection(endPoint.String()+"/ws?clientId="+c.ID, c)
 	return c
+}
+
+func (c *Client) SetEASToken(token string) {
+	c.Token = token
 }
 
 func (c *Client) IsInitialized() bool {
@@ -576,6 +581,9 @@ func (c *Client) makeRequest(method, router string, values url.Values, data inte
 
 	// Don't change the order
 	req.Header.Set("Content-Type", contentType)
+	if c.Token != "" {
+		req.Header.Set("Authorization", c.Token)
+	}
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}
