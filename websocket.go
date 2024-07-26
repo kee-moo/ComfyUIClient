@@ -120,12 +120,13 @@ func getWSMessageData(messageType WsMessageType) interface{} {
 			Executed:             func() interface{} { return &WSMessageDataExecuted{} },
 			ExecutionInterrupted: func() interface{} { return &WSMessageExecutionInterrupted{} },
 			ExecutionError:       func() interface{} { return &WSMessageExecutionError{} },
+			ExecutionSuccess:     func() interface{} { return &WSMessageExecuteSuccess{} },
 		}
 	})
 
 	fn, exist := messageTypeMap[messageType]
 	if !exist {
-		return &WSMessageDataStatus{}
+		return &WSEmptyMessage{}
 	}
 	return fn()
 }
@@ -221,6 +222,13 @@ type WSMessageExecutionInterrupted struct {
 	NodeID   string   `json:"node_id"`
 	NodeType string   `json:"node_type"`
 	Executed []string `json:"executed"`
+}
+
+type WSMessageExecuteSuccess struct {
+	PromptID string `json:"prompt_id"`
+}
+
+type WSEmptyMessage struct {
 }
 
 type WSMessageExecutionError struct {

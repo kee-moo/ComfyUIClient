@@ -11,6 +11,7 @@ const (
 	ExecutionError       WsMessageType = "execution_error"
 	ExecutionCached      WsMessageType = "execution_cached"
 	ExecutionInterrupted WsMessageType = "execution_interrupted"
+	ExecutionSuccess     WsMessageType = "execution_success"
 )
 
 type Router string
