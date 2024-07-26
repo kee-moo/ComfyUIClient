@@ -110,7 +110,7 @@ func (c *Client) Handle(msg string) error {
 		s := message.Data.(*WSMessageDataStatus)
 		c.queueCount = s.Status.ExecInfo.QueueRemaining
 	case ExecutionStart, ExecutionCached, Executing,
-		Progress, Executed, ExecutionInterrupted, ExecutionError:
+		Progress, Executed, ExecutionInterrupted, ExecutionError, ExecutionSuccess:
 		if err := c.SendTaskStatus(message); err != nil {
 			return fmt.Errorf("SendTaskStatus: error: %w", err)
 		}
