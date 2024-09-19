@@ -43,7 +43,7 @@ func (w *WebSocketConnection) ConnectAndListen() {
 			var err error
 			for i := 0; i < w.MaxRetry; i++ {
 				if err = w.Connect(); err != nil {
-					log.Printf("websocket connection error %v", err)
+					log.Printf("[%s] websocket connection error %v", w.URL, err)
 					continue
 				}
 				break
@@ -62,7 +62,7 @@ func (w *WebSocketConnection) Connect() error {
 	var err error
 	w.Conn, _, err = websocket.DefaultDialer.Dial(w.URL, nil)
 	if err != nil {
-		return fmt.Errorf("websocket.DefaultDialer.Dial: error: %w", err)
+		return fmt.Errorf("[%s] websocket.DefaultDialer.Dial: error: %w", w.URL, err)
 	}
 	w.SetIsConnected(true)
 	return nil
@@ -73,12 +73,12 @@ func (w *WebSocketConnection) listen() {
 	for {
 		_, message, err := w.Conn.ReadMessage()
 		if err != nil {
-			log.Println("reading from WebSocket error: ", err)
+			log.Println(w.URL, "reading from WebSocket error: ", err)
 			w.SetIsConnected(false)
 			break
 		}
 		if err := w.handler.Handle(string(message)); err != nil {
-			log.Println("handle WebSocket error: ", err)
+			log.Println(w.URL, "handle WebSocket error: ", err)
 		}
 	}
 
