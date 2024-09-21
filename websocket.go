@@ -1,14 +1,12 @@
 package comfyUIclient
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/gorilla/websocket"
 )
 
@@ -44,7 +42,7 @@ func (w *WebSocketConnection) ConnectAndListen() {
 			var err error
 			for i := 0; i < w.MaxRetry; i++ {
 				if err = w.Connect(); err != nil {
-					hlog.CtxErrorf(context.Background(), "[%s] websocket connection error %v", w.URL, err)
+					fmt.Printf("[%s] websocket connection error %v\n", w.URL, err)
 					continue
 				}
 				break
@@ -70,18 +68,15 @@ func (w *WebSocketConnection) Connect() error {
 }
 
 func (w *WebSocketConnection) listen() {
-	ctx := context.Background()
 	defer w.Close()
 	for {
 		_, message, err := w.Conn.ReadMessage()
 		if err != nil {
-			hlog.CtxInfof(ctx, "[%s]failed to reading from Websocket with cause %v", w.URL, err)
 			w.SetIsConnected(false)
 			break
 		}
-		if err := w.handler.Handle(string(message)); err != nil {
-			hlog.CtxInfof(ctx, "[%s]failed to handle message with cause %v", w.URL, err)
-		}
+
+		w.handler.Handle(string(message))
 	}
 
 }
