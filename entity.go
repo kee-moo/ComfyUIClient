@@ -59,6 +59,7 @@ type PromptHistoryMember struct {
 type PromptHistoryMemberImages struct {
 	Images []DataOutputFile  `json:"images"`
 	Gifs   []DataOutputFile  `json:"gifs"`
+	Audios []DataOutputFile  `json:"audio"`
 	Videos []string          `json:"video"`
 }
 
