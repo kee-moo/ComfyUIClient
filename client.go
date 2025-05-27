@@ -25,6 +25,10 @@ type Client struct {
 	Token      string
 }
 
+func (c *Client) GetBaseURL() string {
+	return c.baseURL
+}
+
 type EndPoint struct {
 	Protocol string
 	Address  string
