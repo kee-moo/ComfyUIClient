@@ -16,13 +16,14 @@ import (
 )
 
 type Client struct {
-	ID         string
-	baseURL    string
-	queueCount int
-	webSocket  *WebSocketConnection
-	ch         chan *WSMessage
-	httpClient *http.Client
-	Token      string
+	ID          string
+	baseURL     string
+	queueCount  int
+	webSocket   *WebSocketConnection
+	ch          chan *WSMessage
+	httpClient  *http.Client
+	Token       string
+	BearerToken string
 }
 
 func (c *Client) GetBaseURL() string {
@@ -76,12 +77,16 @@ func NewClient(endPoint *EndPoint, httpClient *http.Client) *Client {
 	} else {
 		endPoint.Protocol = "ws"
 	}
-	c.webSocket = NewDefaultWebSocketConnection(endPoint.String()+"/ws?clientId="+c.ID, c)
+	c.webSocket = NewDefaultWebSocketConnection(endPoint.String()+"/ws?clientId="+c.ID, c, c.BearerToken)
 	return c
 }
 
 func (c *Client) SetEASToken(token string) {
 	c.Token = token
+}
+
+func (c *Client) SetBearerToken(token string) {
+	c.BearerToken = token
 }
 
 func (c *Client) IsInitialized() bool {
@@ -585,7 +590,9 @@ func (c *Client) makeRequest(method, router string, values url.Values, data inte
 
 	// Don't change the order
 	req.Header.Set("Content-Type", contentType)
-	if c.Token != "" {
+	if c.BearerToken != "" {
+		req.Header.Set("Authorization", "Bearer "+c.BearerToken)
+	} else if c.Token != "" {
 		req.Header.Set("Authorization", c.Token)
 	}
 	for key, value := range headers {

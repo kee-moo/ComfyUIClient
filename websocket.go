@@ -16,21 +16,23 @@ type WebSocketConnection struct {
 	isConnected atomic.Bool
 	MaxRetry    int
 	handler     Handler
+	bearerToken string
 }
 
 type Handler interface {
 	Handle(string) error
 }
 
-func NewDefaultWebSocketConnection(url string, handler Handler) *WebSocketConnection {
-	return NewWebSocketConnection(url, 3, handler)
+func NewDefaultWebSocketConnection(url string, handler Handler, bearerToken string) *WebSocketConnection {
+	return NewWebSocketConnection(url, 3, handler, bearerToken)
 }
 
-func NewWebSocketConnection(url string, maxRetry int, handler Handler) *WebSocketConnection {
+func NewWebSocketConnection(url string, maxRetry int, handler Handler, bearerToken string) *WebSocketConnection {
 	return &WebSocketConnection{
-		URL:      url,
-		MaxRetry: maxRetry,
-		handler:  handler,
+		URL:         url,
+		MaxRetry:    maxRetry,
+		handler:     handler,
+		bearerToken: bearerToken,
 	}
 }
 
@@ -59,7 +61,15 @@ func (w *WebSocketConnection) ConnectAndListen() {
 
 func (w *WebSocketConnection) Connect() error {
 	var err error
-	w.Conn, _, err = websocket.DefaultDialer.Dial(w.URL, nil)
+	var headers map[string][]string
+
+	if w.bearerToken != "" {
+		headers = map[string][]string{
+			"Authorization": {"Bearer " + w.bearerToken},
+		}
+	}
+
+	w.Conn, _, err = websocket.DefaultDialer.Dial(w.URL, headers)
 	if err != nil {
 		return fmt.Errorf("[%s] websocket.DefaultDialer.Dial: error: %w", w.URL, err)
 	}
