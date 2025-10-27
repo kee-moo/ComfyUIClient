@@ -16,7 +16,7 @@ type WebSocketConnection struct {
 	isConnected atomic.Bool
 	MaxRetry    int
 	handler     Handler
-	bearerToken string
+	BearerToken string
 }
 
 type Handler interface {
@@ -32,7 +32,7 @@ func NewWebSocketConnection(url string, maxRetry int, handler Handler, bearerTok
 		URL:         url,
 		MaxRetry:    maxRetry,
 		handler:     handler,
-		bearerToken: bearerToken,
+		BearerToken: bearerToken,
 	}
 }
 
@@ -63,9 +63,9 @@ func (w *WebSocketConnection) Connect() error {
 	var err error
 	var headers map[string][]string
 
-	if w.bearerToken != "" {
+	if w.BearerToken != "" {
 		headers = map[string][]string{
-			"Authorization": {"Bearer " + w.bearerToken},
+			"Authorization": {"Bearer " + w.BearerToken},
 		}
 	}
 

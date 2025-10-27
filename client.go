@@ -87,6 +87,9 @@ func (c *Client) SetEASToken(token string) {
 
 func (c *Client) SetBearerToken(token string) {
 	c.BearerToken = token
+	if c.webSocket != nil {
+		c.webSocket.BearerToken = token
+	}
 }
 
 func (c *Client) IsInitialized() bool {
