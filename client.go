@@ -311,7 +311,6 @@ func getHistorySlices(resp *http.Response) ([]*PromptHistoryItem, error) {
 	}
 	var historyMap map[string]*PromptHistoryMember
 	if err := json.Unmarshal(body, &historyMap); err != nil {
-		fmt.Println(string(body))
 		return nil, fmt.Errorf("json.Unmarshal: error: %w, resp.Body: %v", err, string(body))
 	}
 	histories := make([]*PromptHistoryItem, 0, len(historyMap))
